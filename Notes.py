@@ -132,19 +132,16 @@ def add_comment():
 def home():
     return redirect('/login')
 
-if __name__ == "__main__":   
+def initialize_database():
     with app.app_context():
         db.create_all()
         if not User.query.filter_by(username='Abderrahmane').first():
-            user1 = User(username='Abderrahmane', password=generate_password_hash('PassWord123'))  # type: ignore
+            user1 = User(username='Abderrahmane', password=generate_password_hash('PassWord123'))
             db.session.add(user1)
-
         if not User.query.filter_by(username='Ikram').first():
-            user2 = User(username='Ikram', password=generate_password_hash('Bibibobo1loop2'))  # type: ignore
+            user2 = User(username='Ikram', password=generate_password_hash('Bibibobo1loop2'))
             db.session.add(user2)
-        
-
         db.session.commit()
-        db.create_all()
-        print("MySQL database tables created!")
-    app.run(debug=False, host="0.0.0.0", port=8000)
+if __name__ == "__main__":
+    initialize_database()
+
