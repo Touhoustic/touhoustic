@@ -142,6 +142,9 @@ def initialize_database():
             user2 = User(username='Ikram', password=generate_password_hash('Bibibobo1loop2'))
             db.session.add(user2)
         db.session.commit()
+
+
 if __name__ == "__main__":
-    initialize_database()
+    initialize_database()  # ✅ Run DB creation ONLY when executing locally
+    print("✅ Database initialized locally")
 
