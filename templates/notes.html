@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Notes 💕</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #e75480 0%, #667eea 40%, #764ba2 70%, #3498db 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            /* Optional: add a subtle pattern overlay for extra depth */
+            /* background-image: linear-gradient(135deg, #e75480 0%, #667eea 40%, #764ba2 70%, #3498db 100%), url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="1" fill="white" fill-opacity="0.05"/></svg>'); */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            padding: 10px 22px;
+            border-radius: 18px;
+            background: linear-gradient(90deg, #e75480, #3498db);
+            color: #fff;
+            font-weight: 600;
+            font-size: 1em;
+            border: none;
+            box-shadow: 0 4px 16px rgba(52, 152, 219, 0.08);
+            transition: background 0.3s, box-shadow 0.3s;
+            z-index: 10;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-btn:hover {
+            background: linear-gradient(90deg, #3498db, #e75480);
+            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.18);
+        }
+
+        .note-form {
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            animation: slideInUp 0.8s ease-out 0.5s both;
+        }
+
+        .note-form h2 {
+            margin-bottom: 20px;
+            color: #5a67d8;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .note-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .note-input:focus {
+            outline: none;
+            border-color: #5a67d8;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #e75480 100%);
+            background-size: 200% 200%;
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(.22,1,.36,1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+            background-position: right center;
+        }
+
+        /* Mood Selector Styles */
+        .mood-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .mood-radio {
+            display: none;
+        }
+
+        .mood-option {
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .mood-option:hover {
+            border-color: #5a67d8;
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .mood-radio:checked + .mood-option {
+            border-color: #5a67d8;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Mood Display */
+        .mood-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .mood-happy { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; }
+        .mood-excited { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+        .mood-loved { background: linear-gradient(135deg, #ec4899, #db2777); color: white; }
+        .mood-calm { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .mood-sad { background: linear-gradient(135deg, #6b7280, #4b5563); color: white; }
+        .mood-neutral { background: linear-gradient(135deg, #9ca3af, #6b7280); color: white; }
+
+        /* Comments Section */
+        .comments-section {
+            margin-top: 15px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+
+        .comments-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: #5a67d8;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .comments-header:hover {
+            color: #4c51bf;
+        }
+
+        .comments-list {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .comments-list.show {
+            max-height: 500px;
+        }
+
+        .comment {
+            background: rgba(248, 250, 252, 0.8);
+            padding: 12px 15px;
+            border-radius: 15px;
+            margin-bottom: 8px;
+            border-left: 3px solid #5a67d8;
+        }
+
+        .comment-content {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+
+        .comment-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .comment-author {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .comment-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        .add-comment-form {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .add-comment-form.show {
+            display: block;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            margin-bottom: 10px;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: #5a67d8;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.1);
+        }
+
+        .comment-submit-btn {
+            background: linear-gradient(135deg, #5a67d8 0%, #4c51bf 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comment-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(90, 103, 216, 0.3);
+        }
+
+        .note-form {
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            animation: slideInUp 0.8s ease-out 0.5s both;
+        }
+
+        .note-form h2 {
+            margin-bottom: 20px;
+            color: #5a67d8;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .note-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .note-input:focus {
+            outline: none;
+            border-color: #5a67d8;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            animation: slideInRight 0.5s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notes-section {
+            animation: fadeIn 1s ease-out 0.8s both;
+        }
+
+        .notes-header {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .notes-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .note {
+            background: rgba(255,255,255,0.95);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .note:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .note.mine {
+            background: linear-gradient(135deg, rgba(72, 187, 120, 0.1) 0%, rgba(56, 161, 105, 0.1) 100%);
+        }
+
+        /* Beautiful personalized borders */
+        .abdo-border {
+            border: 3px solid transparent !important;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #3498db, #2980b9, #5dade2) border-box !important;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.2) !important;
+        }
+
+
+        .abdo-border:hover {
+            box-shadow: 0 15px 40px rgba(52, 152, 219, 0.3) !important;
+            transform: translateY(-8px) !important;
+        }
+
+        .abdo-border .author-avatar {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .ikram-border {
+            border: 3px solid transparent !important;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #e75480, #d63384, #f8b4cb) border-box !important;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(231, 84, 128, 0.2) !important;
+        }
+
+
+        .ikram-border:hover {
+            box-shadow: 0 15px 40px rgba(231, 84, 128, 0.3) !important;
+            transform: translateY(-8px) !important;
+        }
+
+        .ikram-border .author-avatar {
+            background: linear-gradient(135deg, #e75480 0%, #d63384 100%) !important;
+            box-shadow: 0 4px 15px rgba(231, 84, 128, 0.3);
+        }
+
+        /* Add subtle glow effect */
+        .abdo-border::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 22px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .abdo-border:hover::after {
+            opacity: 0.1;
+        }
+
+        .ikram-border::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #e75480, #d63384);
+            border-radius: 22px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ikram-border:hover::after {
+            opacity: 0.1;
+        }
+
+        /* Special romantic animation for the borders */
+        @keyframes borderPulse {
+            0%, 100% { 
+                box-shadow: 0 10px 30px rgba(52, 152, 219, 0.2); 
+            }
+            50% { 
+                box-shadow: 0 15px 35px rgba(52, 152, 219, 0.3); 
+            }
+        }
+
+        @keyframes borderPulsePink {
+            0%, 100% { 
+                box-shadow: 0 10px 30px rgba(231, 84, 128, 0.2); 
+            }
+            50% { 
+                box-shadow: 0 15px 35px rgba(231, 84, 128, 0.3); 
+            }
+        }
+
+        .abdo-border:focus-within {
+            animation: borderPulse 2s infinite;
+        }
+
+        .ikram-border:focus-within {
+            animation: borderPulsePink 2s infinite;
+        }
+
+        .note-content {
+            font-size: 1.35em;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            color: #2d3748;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        .note-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #718096;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+
+        .note-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .author-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .note.mine .author-avatar {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .note-time {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .no-notes {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            opacity: 0.8;
+            padding: 60px 20px;
+        }
+
+        .no-notes i {
+            font-size: 3em;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        /* Floating hearts animation */
+        .heart {
+            position: fixed;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 20px;
+            animation: float 6s infinite linear;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Shiny text effect */
+        .shiny-text {
+          color: transparent;
+          background: linear-gradient(
+            120deg,
+            #e75480 40%,   /* Pink for contrast, or pick a color you like */
+            #fff 50%,
+            #3498db 60%    /* Blue for contrast, or pick a color you like */
+          );
+          background-size: 200% 100%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          display: inline-block;
+          animation: shine 5s linear infinite;
+          text-shadow: 0 0 8px rgba(52, 152, 219, 0.15), 0 0 2px #e75480;
+        }
+
+        .shiny-text-abdo {
+          color: transparent;
+          background: linear-gradient(
+            120deg,
+            #3498db 40%,   /* Blue for Abderrahmane */
+            #fff 50%,
+            #2980b9 60%
+          );
+          background-size: 200% 100%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          display: inline-block;
+          animation: shine 5s linear infinite;
+          text-shadow: 0 0 8px #3498db44, 0 0 2px #2980b9;
+        }
+
+        .shiny-text-ikram {
+          color: transparent;
+          background: linear-gradient(
+            120deg,
+            #e75480 40%,   /* Pink for Ikram */
+            #fff 50%,
+            #d63384 60%
+          );
+          background-size: 200% 100%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          display: inline-block;
+          animation: shine 5s linear infinite;
+          text-shadow: 0 0 8px #e7548044, 0 0 2px #d63384;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .logout-btn {
+                position: relative;
+                padding: 5px 15px;
+                margin-top: 20px;
+            }
+            
+            .note-form {
+                padding: 20px;
+            }
+            
+            .note {
+                padding: 20px;
+            }
+        }
+
+        /* Scroll animations */
+        .note {
+            opacity: 1;
+            transform: none;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+        .note.animated {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: noteSlideIn 0.6s ease-out forwards;
+        }
+
+        .note:nth-child(even) {
+            animation-delay: 0.1s;
+        }
+
+        .note:nth-child(odd) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes noteSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shine {
+          0% {
+            background-position: 200% 0;
+          }
+          100% {
+            background-position: -200% 0;
+          }
+        }
+
+        .star-border-container {
+  display: inline-block;
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.border-gradient-bottom {
+  position: absolute;
+  width: 300%;
+  height: 50%;
+  opacity: 0.7;
+  bottom: -12px;
+  right: -250%;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #e75480, #fff, #3498db, #fff, #e75480);
+  animation: star-movement-bottom 2.5s linear infinite alternate;
+  z-index: 0;
+}
+
+.border-gradient-top {
+  position: absolute;
+  opacity: 0.7;
+  width: 300%;
+  height: 50%;
+  top: -12px;
+  left: -250%;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #3498db, #fff, #e75480, #fff, #3498db);
+  animation: star-movement-top 2.5s linear infinite alternate;
+  z-index: 0;
+}
+
+.inner-content {
+  position: relative;
+  border: 1px solid #222;
+  background: #000;
+  color: white;
+  font-size: 16px;
+  text-align: center;
+  padding: 24px 26px;
+  border-radius: 20px;
+  z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@keyframes star-movement-bottom {
+  0% {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-100%, 0%);
+    opacity: 0;
+  }
+}
+
+@keyframes star-movement-top {
+  0% {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100%, 0%);
+    opacity: 0;
+  }
+}
+
+.animated-gradient-text {
+  position: relative;
+  margin: 0 auto;
+  display: inline-block;
+  padding: 2px;
+  border-radius: 20px;
+  background: linear-gradient(45deg, #e75480, #fff, #3498db, #fff, #e75480);
+  background-size: 300% 300%;
+  animation: borderGlow 3s ease infinite;
+}
+
+@keyframes borderGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.text-content {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 18px;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.text-content h1 {
+  font-size: 2.5em;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, #e75480, #fff, #3498db, #fff, #e75480);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: textShine 5s linear infinite;
+}
+
+@keyframes textShine {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.subtitle {
+  color: rgba(255, 255, 255, 1);
+  font-size: 1.1em;
+}
+
+.subtitle strong {
+  background: linear-gradient(90deg, #3498db, #e75480);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.see-more-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #e75480 100%);
+    background-size: 200% 200%;
+    color: white;
+    border: none;
+    padding: 18px 35px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.22,1,.36,1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 30px auto 0 auto;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.15);
+}
+
+.see-more-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.see-more-btn:hover::before {
+    left: 100%;
+}
+
+.see-more-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.25);
+    background-position: right center;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header"> 
+          <div class="animated-gradient-text">
+            <div class="text-content">
+              <h1>
+                <i class="fas fa-heart"></i> Our Notes <i class="fas fa-heart"></i>
+              </h1>
+              <div class="subtitle">
+                Welcome back, <strong>{{ user.username }}</strong>! Share your thoughts and memories 💕
+              </div>
+            </div>
+          </div>
+        </header>
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+
+        <div class="note-form">
+            <h2><i class="fas fa-pen-fancy"></i> Leave a new note</h2>
+            
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div class="flash-messages">
+                  {% for message in messages %}
+                    <div class="flash">
+                        <i class="fas fa-check-circle"></i>
+                        {{ message }}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <form method="post" id="noteForm">
+                <div class="form-group">
+                    <textarea 
+                        name="content" 
+                        class="note-input" 
+                        placeholder="What's on your mind? Share your thoughts, feelings, or just say hello... 💭" 
+                        required
+                        id="noteContent"
+                    ></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="mood" style="color: #5a67d8; font-weight: 600; margin-bottom: 10px; display: block;">
+                        <i class="fas fa-heart"></i> How are you feeling?
+                    </label>
+                    <div class="mood-selector">
+                        <input type="radio" name="mood" value="happy" id="mood-happy" class="mood-radio">
+                        <label for="mood-happy" class="mood-option">😊 Happy</label>
+
+                        <input type="radio" name="mood" value="excited" id="mood-excited" class="mood-radio">
+                        <label for="mood-excited" class="mood-option">🎉 Excited</label>
+
+                        <input type="radio" name="mood" value="loved" id="mood-loved" class="mood-radio">
+                        <label for="mood-loved" class="mood-option">💕 Loved</label>
+
+                        <input type="radio" name="mood" value="calm" id="mood-calm" class="mood-radio">
+                        <label for="mood-calm" class="mood-option">😌 Calm</label>
+
+                        <input type="radio" name="mood" value="sad" id="mood-sad" class="mood-radio">
+                        <label for="mood-sad" class="mood-option">😢 Sad</label>
+
+                        <input type="radio" name="mood" value="neutral" id="mood-neutral" class="mood-radio" checked>
+                        <label for="mood-neutral" class="mood-option">😐 Neutral</label>
+
+                        <input type="radio" name="mood" value="angry" id="mood-angry" class="mood-radio">
+                        <label for="mood-angry" class="mood-option">😠 Angry</label>
+
+                        <input type="radio" name="mood" value="anxious" id="mood-anxious" class="mood-radio">
+                        <label for="mood-anxious" class="mood-option">😰 Anxious</label>
+
+                        <input type="radio" name="mood" value="grateful" id="mood-grateful" class="mood-radio">
+                        <label for="mood-grateful" class="mood-option">🙏 Grateful</label>
+
+                        <input type="radio" name="mood" value="tired" id="mood-tired" class="mood-radio">
+                        <label for="mood-tired" class="mood-option">😴 Tired</label>
+
+                        <input type="radio" name="mood" value="energetic" id="mood-energetic" class="mood-radio">
+                        <label for="mood-energetic" class="mood-option">⚡ Energetic</label>
+
+                        <input type="radio" name="mood" value="confused" id="mood-confused" class="mood-radio">
+                        <label for="mood-confused" class="mood-option">🤔 Confused</label>
+
+                        <input type="radio" name="mood" value="proud" id="mood-proud" class="mood-radio">
+                        <label for="mood-proud" class="mood-option">🏆 Proud</label>
+
+                        <input type="radio" name="mood" value="hopeful" id="mood-hopeful" class="mood-radio">
+                        <label for="mood-hopeful" class="mood-option">🌈 Hopeful</label>
+
+                        <input type="radio" name="mood" value="nostalgic" id="mood-nostalgic" class="mood-radio">
+                        <label for="mood-nostalgic" class="mood-option">📸 Nostalgic</label>
+
+                        <input type="radio" name="mood" value="romantic" id="mood-romantic" class="mood-radio">
+                        <label for="mood-romantic" class="mood-option">💖 Romantic</label>
+                    </div>
+                </div>
+                <div id="magnetWrapper" style="display: flex; justify-content: center;">
+                  <button type="submit" class="submit-btn" id="submitBtn">
+    <i class="fas fa-paper-plane"></i>
+    Send Note
+  </button>
+                </div>
+            </form>
+        </div>
+
+        <section class="notes-section">
+            <h2 class="notes-header"><i class="fas fa-comments"></i> Your Conversation</h2>
+            
+            <div class="notes-grid" id="notesGrid">
+                {% for note in notes %}
+      <div class="star-border-container note-card" style="{% if loop.index > 7 %}display:none;{% endif %}">
+  <div class="border-gradient-top"></div>
+  <div class="border-gradient-bottom"></div>
+  <div class="inner-content note animated
+      {% if note.author.username == 'Abderrahmane' %} abdo-border
+      {% elif note.author.username == 'Ikram' %} ikram-border
+      {% endif %}
+      {% if note.author_id == user.id %} mine{% endif %}" data-note-id="{{ note.id }}">
+    
+    <!-- Mood Indicator -->
+    {% if note.mood %}
+    <div class="mood-indicator mood-{{ note.mood }}">
+      {% if note.mood == 'happy' %}😊 Happy
+      {% elif note.mood == 'excited' %}🎉 Excited
+      {% elif note.mood == 'loved' %}💕 Loved
+      {% elif note.mood == 'calm' %}😌 Calm
+      {% elif note.mood == 'sad' %}😢 Sad
+      {% else %}😐 Neutral{% endif %}
+    </div>
+    {% endif %}
+    
+    <div class="note-content">{{ note.content|e }}</div>
+    
+    <!-- Comments Section -->
+    <div class="comments-section">
+      <div class="comments-header" onclick="toggleComments('{{ note.id }}')">
+        <i class="fas fa-comments"></i>
+        <span>{{ note.comments|length }} Comments</span>
+        <i class="fas fa-chevron-down" id="chevron-{{ note.id }}"></i>
+      </div>
+      
+      <div class="comments-list" id="comments-{{ note.id }}">
+        {% for comment in note.comments %}
+        <div class="comment">
+          <div class="comment-content">{{ comment.content|e }}</div>
+          <div class="comment-meta">
+            <div class="comment-author">
+              <div class="comment-avatar">
+                {{ comment.author.username[0].upper() }}
+              </div>
+              <span>{{ comment.author.username }}</span>
+            </div>
+            <div class="comment-time">
+              <i class="fas fa-clock"></i>
+              <span>{{ comment.timestamp.strftime('%b %d, %Y at %H:%M') }}</span>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      
+      <div class="add-comment-form" id="comment-form-{{ note.id }}">
+        <textarea class="comment-input" placeholder="Write a comment..." id="comment-input-{{ note.id }}"></textarea>
+        <button class="comment-submit-btn" onclick="addComment('{{ note.id }}')">
+          <i class="fas fa-paper-plane"></i> Add Comment
+        </button>
+      </div>
+    </div>
+    
+    <div class="note-meta">
+      <div class="note-author">
+        <div class="author-avatar">
+          {{ note.author.username[0].upper() }}
+        </div>
+        <span class="{% if note.author.username == 'Abderrahmane' %}shiny-text-abdo{% elif note.author.username == 'Ikram' %}shiny-text-ikram{% else %}shiny-text{% endif %}">
+          {{ note.author.username }}
+        </span>
+      </div>
+      <div class="note-time">
+        <i class="fas fa-clock"></i>
+        <span>{{ note.timestamp.strftime('%b %d, %Y at %H:%M') }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+                {% else %}
+                  <div class="no-notes">
+                    <div>
+                        <i class="fas fa-heart-broken"></i>
+                        <p>No notes yet! Start your conversation by writing the first note 💕</p>
+                    </div>
+                  </div>
+                {% endfor %}
+            </div>
+            <button id="see-more-btn" class="see-more-btn">
+  <i class="fas fa-chevron-down"></i> See more
+</button>
+        </section>
+    </div>
+
+    <script>
+        // Floating hearts animation
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '💕';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+        }
+
+        // Create hearts periodically
+        setInterval(createHeart, 3000);
+
+        // Form submission animation
+        const form = document.getElementById('noteForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const noteContent = document.getElementById('noteContent');
+
+        form.addEventListener('submit', function(e) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+        });
+
+        // Auto-resize textarea
+        noteContent.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Add typing indicator effect
+        let typingTimer;
+        noteContent.addEventListener('input', function() {
+            clearTimeout(typingTimer);
+            this.style.borderColor = '#48bb78';
+            
+            typingTimer = setTimeout(() => {
+                this.style.borderColor = '#e2e8f0';
+            }, 1000);
+        });
+
+        // Smooth scroll for new notes
+        function scrollToBottom() {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+
+        // Add hover effects to notes
+        document.querySelectorAll('.note').forEach(note => {
+            note.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            note.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Add click effect to submit button
+        submitBtn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(255,255,255,0.3)';
+            ripple.style.animation = 'ripple 0.6s linear';
+            ripple.style.pointerEvents = 'none';
+            
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+
+        // Add CSS for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                0% { transform: scale(0); opacity: 1; }
+                100% { transform: scale(1.5); opacity: 0; }
+            }
+            .submit-btn { position: relative; overflow: hidden; }
+        `;
+        document.head.appendChild(style);
+
+        // Welcome message on first load
+        if (sessionStorage.getItem('welcomed') !== 'true') {
+            setTimeout(() => {
+                const welcomeNote = document.createElement('div');
+                welcomeNote.innerHTML = `
+                    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                                background: rgba(255,255,255,0.95); padding: 30px; border-radius: 20px; 
+                                box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 1000; text-align: center;
+                                animation: fadeInScale 0.5s ease-out;">
+                        <h3 style="color: #5a67d8; margin-bottom: 15px;">
+                            <i class="fas fa-heart"></i> Welcome to Your Love Notes! <i class="fas fa-heart"></i>
+                        </h3>
+                        <p style="color: #666; margin-bottom: 20px;">Share your thoughts, memories, and sweet messages with each other 💕</p>
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                       color: white; border: none; padding: 10px 20px; border-radius: 15px; 
+                                       cursor: pointer;">
+                            Got it! <i class="fas fa-thumbs-up"></i>
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(welcomeNote);
+                sessionStorage.setItem('welcomed', 'true');
+                
+                const keyframes = `
+                    @keyframes fadeInScale {
+                        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+                        100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    }
+                `;
+                const styleSheet = document.createElement('style');
+                styleSheet.textContent = keyframes;
+                document.head.appendChild(styleSheet);
+            }, 1000);
+        }
+
+        // Comments functionality
+        function toggleComments(noteId) {
+            const commentsList = document.getElementById(`comments-${noteId}`);
+            const commentForm = document.getElementById(`comment-form-${noteId}`);
+            const chevron = document.getElementById(`chevron-${noteId}`);
+            
+            if (commentsList.classList.contains('show')) {
+                commentsList.classList.remove('show');
+                commentForm.classList.remove('show');
+                chevron.style.transform = 'rotate(0deg)';
+            } else {
+                commentsList.classList.add('show');
+                commentForm.classList.add('show');
+                chevron.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function addComment(noteId) {
+            const commentInput = document.getElementById(`comment-input-${noteId}`);
+            const content = commentInput.value.trim();
+            
+            if (!content) {
+                alert('Please write a comment first!');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('note_id', noteId);
+            formData.append('content', content);
+            
+            fetch('/add_comment', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Add the new comment to the DOM
+                    const commentsList = document.getElementById(`comments-${noteId}`);
+                    const newComment = document.createElement('div');
+                    newComment.className = 'comment';
+                    newComment.innerHTML = `
+                        <div class="comment-content">${data.comment.content}</div>
+                        <div class="comment-meta">
+                            <div class="comment-author">
+                                <div class="comment-avatar">${data.comment.author_avatar}</div>
+                                <span>${data.comment.author}</span>
+                            </div>
+                            <div class="comment-time">
+                                <i class="fas fa-clock"></i>
+                                <span>${data.comment.timestamp}</span>
+                            </div>
+                        </div>
+                    `;
+                    commentsList.appendChild(newComment);
+                    
+                    // Clear the input
+                    commentInput.value = '';
+                    
+                    // Update comment count
+                    const commentsHeader = commentsList.previousElementSibling;
+                    const countSpan = commentsHeader.querySelector('span');
+                    const currentCount = parseInt(countSpan.textContent.split(' ')[0]);
+                    countSpan.textContent = `${currentCount + 1} Comments`;
+                    
+                    // Show success message
+                    const flash = document.createElement('div');
+                    flash.className = 'flash';
+                    flash.innerHTML = '<i class="fas fa-check-circle"></i> Comment added successfully!';
+                    document.querySelector('.flash-messages').appendChild(flash);
+                    
+                    setTimeout(() => {
+                        flash.remove();
+                    }, 3000);
+                } else {
+                    alert('Error adding comment: ' + data.error);
+                }
+            })
+        }
+
+const magnetBtn = document.getElementById('submitBtn');
+const magnetPadding = 80;
+const magnetStrength = 3;
+
+if (magnetBtn) {
+    function handleMouseMove(e) {
+        const btnRect = magnetBtn.getBoundingClientRect();
+        const centerX = btnRect.left + btnRect.width / 2;
+        const centerY = btnRect.top + btnRect.height / 2;
+        const distX = Math.abs(centerX - e.clientX);
+        const distY = Math.abs(centerY - e.clientY);
+
+        if (distX < btnRect.width / 2 + magnetPadding && distY < btnRect.height / 2 + magnetPadding) {
+            const offsetX = (e.clientX - centerX) / magnetStrength;
+            const offsetY = (e.clientY - centerY) / magnetStrength;
+            magnetBtn.classList.add('magnet-effect');
+            magnetBtn.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
+        } else {
+            magnetBtn.classList.remove('magnet-effect');
+            magnetBtn.style.transform = '';
+        }
+    }
+
+    window.addEventListener('mousemove', handleMouseMove);
+}
+
+document.querySelectorAll('.note.animated').forEach(note => {
+    note.addEventListener('animationend', function() {
+        note.classList.remove('animated');
+    });
+});
+
+let shown = 7;
+const step = 7;
+const notes = document.querySelectorAll('.note-card');
+const btn = document.getElementById('see-more-btn');
+
+btn.addEventListener('click', function() {
+    let revealed = 0;
+    for (let i = shown; i < shown + step && i < notes.length; i++) {
+        notes[i].style.display = '';
+        revealed++;
+    }
+    shown += revealed;
+    if (shown >= notes.length) {
+        btn.style.display = 'none';
+    }
+});
+if (notes.length <= shown) {
+    btn.style.display = 'none';
+}
+    </script>
+</body>
+</html>
