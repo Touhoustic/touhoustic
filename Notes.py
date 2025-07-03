@@ -132,11 +132,11 @@ def add_comment():
 def home():
     return redirect('/login')
 
-if __name__ == "__main__":
-       
+if __name__ == "__main__":   
     with app.app_context():
+        db.create_all()
         if not User.query.filter_by(username='Abderrahmane').first():
-            user1 = User(username='Abderrahmane', password=generate_password_hash('ZeroTwo02'))  # type: ignore
+            user1 = User(username='Abderrahmane', password=generate_password_hash('PassWord123'))  # type: ignore
             db.session.add(user1)
 
         if not User.query.filter_by(username='Ikram').first():
