@@ -1,1 +1,1 @@
-web: python Notes.py
+web: gunicorn Notes:app --bind 0.0.0.0:8000
