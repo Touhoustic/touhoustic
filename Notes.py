@@ -8,7 +8,7 @@ from typing import Optional
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost/notes_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:WoMyCWgVJaTGCpJUtQQRKasAgWuoEsWY@shinkansen.proxy.rlwy.net:23068/railway'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
